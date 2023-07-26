@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "oca-nats-config"
+version = "0.0.0"
+description = ""
+authors = ["elasek <elasek@akond.com>"]
+readme = "README.md"
+packages = [{include = "oca_nats_config"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+nats-py = "^2.3.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
