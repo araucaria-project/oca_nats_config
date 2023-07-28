@@ -22,16 +22,17 @@ class BuildStreams:
 
     async def build_streams(self):
         cnc = ConnectionNATS(port=self.port, host=self.host)
-        response = await cnc.diagnose()
-        for key, status in response.items():
-            if status != StatusEnum.ok:
-                logger.error(f"Can not connect witch nats server. '{key}' has status '{status}'")
-                return
         await cnc.connect()
-        nc = cnc.nc
-        js = nc.jetstream()
 
         try:
+            response = await cnc.diagnose()
+            for key, status in response.items():
+                if status != StatusEnum.ok:
+                    logger.error(f"Can not connect witch nats server. '{key}' has status '{status}'")
+                    return
+            nc = cnc.nc
+            js = nc.jetstream()
+
             for s in DefinedStreams.get_list_streams():
                 c = StreamConfig(name=s, description=s.desc(), subjects=s.subject())
 
