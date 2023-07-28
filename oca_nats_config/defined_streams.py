@@ -10,6 +10,6 @@ class DefinedStreams(DefinedStreamsMethod):
     WEATHER_RAIN_01 = StreamProperty("weather_rain_01", ["weather_rain_01"])
     WEATHER_SUN_LIGHT_01 = StreamProperty("weather_sun_light_01", ["weather_sun_light_01"])
     WEATHER_SKY_TEMPERATURE_01 = StreamProperty("weather_sky_temperature_01", ["weather_sky_temperature_01"])
-    WATCHER_LEVEL_01 = StreamProperty("watcher_level_01", ["watcher_level_01"])
-    WATCHER_LEVEL_02 = StreamProperty("watcher_level_02", ["watcher_level_02"])
+    WATER_LEVEL_01 = StreamProperty("water_level_01", ["water_level_01"])
+    WATER_LEVEL_02 = StreamProperty("water_level_02", ["water_level_02"])
     DIESEL_LEVEL_01 = StreamProperty("diesel_level_01", ["diesel_level_01"])
