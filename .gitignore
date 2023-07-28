@@ -5,7 +5,7 @@ __pycache__
 ob/router/__pycache__/
 poetry.lock
 
-ocabox.egg-info/
+oca_nats_config.egg-info/
 
 oca_nats_config/configuration/*
 !oca_nats_config/configuration/.gitkeep
