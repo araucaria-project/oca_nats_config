@@ -1,0 +1,4 @@
+NATS:
+    port: 4222
+    host: localhost
+    protocol: nats

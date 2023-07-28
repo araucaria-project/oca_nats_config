@@ -7,9 +7,8 @@ poetry.lock
 
 ocabox.egg-info/
 
-ob/configuration/*
-!ob/configuration/.gitkeep
-!ob/configuration/__init__.py
+oca_nats_config/configuration/*
+!oca_nats_config/configuration/.gitkeep
 
 
 venv/
