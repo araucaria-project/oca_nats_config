@@ -14,3 +14,6 @@ oca_nats_config/configuration/*
 venv/
 .venv/
 .ipynb_checkpoints/
+
+/docker/nats/nats-log/
+/docker/nats/nats-store/

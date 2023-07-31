@@ -2,7 +2,9 @@ import asyncio
 import logging
 from oca_nats_config.build_streams import BuildStreams
 
-logger = logging.getLogger(__name__.rsplit('.')[-1])
+logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] [%(name)s] %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+logger = logging.getLogger('main')
+logging.getLogger().setLevel(logging.INFO)
 
 
 def main():
