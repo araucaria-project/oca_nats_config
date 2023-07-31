@@ -3,31 +3,31 @@ NATS:
     host: nats.oca.lan
     protocol: nats
 
-    STREAMS:
-        telemetry:
-            Subjects: # topics
-                - telemetry.water.level
-                - telemetry.water2.level
-                - telemetry.diesel.level
-                - telemetry.weather.temperature
-                - telemetry.weather.wind
-                - telemetry.weather.wind_dir
-                - telemetry.weather.humidity
-                - telemetry.weather.rain
-                - telemetry.weather.sun_light
-                - telemetry.weather.sky_temperature
-            MaxAge: 2592000   # czas w sekundach !! trzymania wiadomości 2592000 = 30 days
-            MaxBytes: 524288000  # max size in bytes 524288000 = 500 MB
-            NoAck: true
-            Discard: old  # jakie wiadomości odrzuca gdy się przepełni
-            DenyDelete: false  # pozwól na usunięcie danych
-            DenyPurge: false  # pozwól na wyczyszczenie strumienia
-        test:
-            Subjects:
-                - test.*
-            MaxAge: 2592000   # czas w sekundach !! trzymania wiadomości
-            MaxBytes: 104857600  # max size in bytes 104857600 = 100 MB
-            NoAck: false
-            Discard: old  # jakie wiadomości odrzuca gdy się przepełni
-            DenyDelete: false  # pozwól na usunięcie danych
-            DenyPurge: false  # pozwól na wyczyszczenie strumienia
+STREAMS:
+    telemetry:
+        Subjects: # topics
+            - telemetry.water.level
+            - telemetry.water2.level
+            - telemetry.diesel.level
+            - telemetry.weather.temperature
+            - telemetry.weather.wind
+            - telemetry.weather.wind_dir
+            - telemetry.weather.humidity
+            - telemetry.weather.rain
+            - telemetry.weather.sun_light
+            - telemetry.weather.sky_temperature
+        MaxAge: 2592000   # czas w sekundach !! trzymania wiadomości 2592000 = 30 days
+        MaxBytes: 524288000  # max size in bytes 524288000 = 500 MB
+        NoAck: true
+        Discard: old  # jakie wiadomości odrzuca gdy się przepełni
+        DenyDelete: false  # pozwól na usunięcie danych
+        DenyPurge: false  # pozwól na wyczyszczenie strumienia
+    test:
+        Subjects:
+            - test.*
+        MaxAge: 2592000   # czas w sekundach !! trzymania wiadomości
+        MaxBytes: 104857600  # max size in bytes 104857600 = 100 MB
+        NoAck: false
+        Discard: old  # jakie wiadomości odrzuca gdy się przepełni
+        DenyDelete: false  # pozwól na usunięcie danych
+        DenyPurge: false  # pozwól na wyczyszczenie strumienia
