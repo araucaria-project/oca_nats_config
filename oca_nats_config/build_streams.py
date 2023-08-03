@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from nats.js.api import StreamConfig, DiscardPolicy
 from nats.js.errors import NotFoundError, BadRequestError, ServerError
@@ -18,7 +19,11 @@ class BuildStreams:
 
     async def build_streams(self):
         cnc = ConnectionNATS(port=self.port, host=self.host)
-        await cnc.connect()
+        try:
+            await asyncio.wait_for(cnc.connect(), 10)
+        except asyncio.TimeoutError as e:
+            logger.error(f"Can not connect to nats server - check server is running")
+            return
         nc = cnc.nc
         try:
             #  ------ check server is alve ------
