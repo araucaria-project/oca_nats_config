@@ -1,0 +1,5 @@
+[Unit]
+Description=Run auto_update.sh every 5 minutes
+
+[Service]
+ExecStart=auto_update.sh
