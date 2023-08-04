@@ -11,6 +11,7 @@ OLD_HEAD=$(git rev-parse HEAD)
 
 git fetch
 git pull
+echo "Pulled changes from git"
 
 NEW_HEAD=$(git rev-parse HEAD)
 
@@ -19,4 +20,5 @@ then
         poetry update
         poetry install
         poetry run build
+        echo "Updated NATS streams"
 fi

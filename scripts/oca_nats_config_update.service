@@ -2,4 +2,4 @@
 Description=Run auto_update.sh every 5 minutes
 
 [Service]
-ExecStart=auto_update.sh
+ExecStart=/usr/bin/auto_update.sh
