@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 SCRIPT_PATH="${BASH_SOURCE:-$0}"
 ABS_SCRIPT_PATH="$(realpath "${SCRIPT_PATH}")"
 
@@ -9,6 +9,7 @@ cd ..
 
 OLD_HEAD=$(git rev-parse HEAD)
 
+git fetch
 git pull
 
 NEW_HEAD=$(git rev-parse HEAD)
