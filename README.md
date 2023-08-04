@@ -39,6 +39,9 @@ For a single update, follow the instructions in [Develop usage](#develop-usage) 
 
 ### Automatic update
 
+Attention. The service is configured to run as a `poweruser`. This means that a user with this name must exist in 
+the environment and must be the owner of the project. Therefore, the installation process should be done as `poweruser`.
+
 To run the auto-update service on linux you need to first complete installation 
 (see [installation](#installation) section).
 

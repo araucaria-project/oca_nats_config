@@ -2,4 +2,5 @@
 Description=Run auto_update.sh every 5 minutes
 
 [Service]
+User=poweruser
 ExecStart=/usr/bin/auto_update.sh
