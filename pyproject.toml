@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "oca-nats-config"
-version = "1.0.0"
+version = "1.0.1"
 description = ""
 authors = ["elasek <elasek@akond.com>"]
 readme = "README.md"
