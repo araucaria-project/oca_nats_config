@@ -71,6 +71,3 @@ At the end, you can check status nev service by:
 ```bash
 sudo systemctl status oca_nats_config_update.timer
 ```
-
-
-
