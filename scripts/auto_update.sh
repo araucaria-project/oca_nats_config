@@ -17,8 +17,8 @@ NEW_HEAD=$(git rev-parse HEAD)
 
 if [ "$OLD_HEAD" != "$NEW_HEAD" ]
 then
-        sudo poetry update
-        sudo poetry install
-        sudo poetry run build
+        python -m poetry update
+        python -m poetry install
+        python -m poetry run build
         echo "Updated NATS streams"
 fi
