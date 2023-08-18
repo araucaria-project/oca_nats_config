@@ -8,8 +8,7 @@ packages = [{include = "oca_nats_config"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-nats-py = "^2.3.1"
-serverish = {git = "https://github.com/AkondLab/serverish.git"}
+serverish = {git = "https://github.com/AkondLab/serverish.git", branch="master", extras=["messenger"]}
 confuse = ">=1.7.0,<1.8.0"
 
 
