@@ -27,7 +27,7 @@ STREAMS:
         DenyPurge: false  # pozwól na wyczyszczenie strumienia
     test:
         Subjects:
-            - test.*
+            - test.>
         MaxAge: 3600   # czas w sekundach !! trzymania wiadomości (1 day for tests)
         MaxBytes: 104857600  # max size in bytes 104857600 = 100 MB
         NoAck: false
