@@ -2,8 +2,8 @@ import asyncio
 import logging
 from nats.js.api import StreamConfig, DiscardPolicy
 from nats.js.errors import NotFoundError, BadRequestError, ServerError
-from serverish.connection_nats import ConnectionNATS
-from serverish.status import StatusEnum
+from serverish.connection import ConnectionNATS
+from serverish.base import StatusEnum
 from oca_nats_config.singleton_config import SingletonConfig
 
 logger = logging.getLogger(__name__.rsplit('.')[-1])
@@ -12,17 +12,25 @@ logger = logging.getLogger(__name__.rsplit('.')[-1])
 class BuildStreams:
 
     def __init__(self):
-        self.port = SingletonConfig.get_config()["NATS"]["port"].get()
-        self.host = SingletonConfig.get_config()["NATS"]["host"].get()
-        self.protocol = SingletonConfig.get_config()["NATS"]["protocol"].get()
+        self.port = []
+        self.host = []
+        self.protocol = []
+        nats_servers = SingletonConfig.get_config()["NATS"]
+        for server in nats_servers:
+            self.port.append(server["port"].get())
+            self.host.append(server["host"].get())
+            self.protocol.append(server["protocol"].get())
+
         self.streams = SingletonConfig.get_config()["STREAMS"].get()
 
     async def build_streams(self):
         cnc = ConnectionNATS(port=self.port, host=self.host)
         try:
-            await asyncio.wait_for(cnc.connect(), 10)
+            timeout = 10
+            await asyncio.wait_for(cnc.connect(), timeout)
         except asyncio.TimeoutError as e:
-            logger.error(f"Can not connect to nats server - check server is running")
+            await cnc.update_statuses(no_deduce=True)
+            logger.error(f"Can not connect to nats server - check server is running {cnc.format_status()}")
             return
         nc = cnc.nc
         try:

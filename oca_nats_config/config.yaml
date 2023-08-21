@@ -1,7 +1,10 @@
 NATS:
-    port: 4222
-    host: nats.oca.lan
-    protocol: nats
+    - port: 4222
+      host: nats.oca.lan
+      protocol: nats
+    - port: 4222
+      host: localhost
+      protocol: nats
 
 STREAMS:
     telemetry:
@@ -25,7 +28,7 @@ STREAMS:
     test:
         Subjects:
             - test.*
-        MaxAge: 2592000   # czas w sekundach !! trzymania wiadomości
+        MaxAge: 3600   # czas w sekundach !! trzymania wiadomości (1 day for tests)
         MaxBytes: 104857600  # max size in bytes 104857600 = 100 MB
         NoAck: false
         Discard: old  # jakie wiadomości odrzuca gdy się przepełni
