@@ -13,7 +13,7 @@ def main():
 
 async def async_main():
     bs = BuildStreams()
-    await bs.build_streams()
+    # await bs.build_streams()
 
 
 if __name__ == '__main__':
