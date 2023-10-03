@@ -31,6 +31,9 @@ STREAMS:
     tic_status:  # Retention policy for TIC components status logs: minimum 1 day, as long as disk space limit is not reached
         Subjects:
             - tic.status.>
+        # e.g.
+        #       tic.status.zb08.program.current   # current program published on program loading
+        #       tic.status.zb08.program.state     # state of the program tasks execution
         Description: "For components and operations statuses. Mostly enum strings, may be used in application logic, and UI"
         MaxAge: 2592000   # 2592000s = 30 days
         MaxBytes: 524288000  # max size in bytes 500 MB
