@@ -3,7 +3,10 @@
 ## Description
 
 The main task of the project is to maintain information about existing 
-streams in the nats network, and to update them.
+streams in the OCA observatory NATS network, and to update them on either
+OCA server `nats.oca.lan` or developer machine.
+
+The stream configuration for developers is stored in the `oca_nats_config/configuration`
 
 ## Usage
 
@@ -32,6 +35,11 @@ To update the nats server with new streams, run the command:
 
 ## Installation
 
+### Docker
+For the installation on Docker (OCA server or local developer machine)
+follow the instructions in [Docker](docker/nats/NOTES.md) section.
+
+### Manual installation
 First you need to clone the repository from git.
 ```bash
 git clone https://github.com/araucaria-project/oca_nats_config.git
