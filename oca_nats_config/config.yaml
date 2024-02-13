@@ -81,6 +81,9 @@ STREAMS:
 #            - telemetry.weather.sun_light
 #            - telemetry.weather.sky_temperature
             - telemetry.weather.>
+            - telemetry.conditions.>
+            - telemetry.lights.>
+            - telemetry.blinds.>
         MaxAge: 2592000   # czas w sekundach !! trzymania wiadomości 2592000 = 30 days
         MaxBytes: 524288000  # max size in bytes 524288000 = 500 MB
         NoAck: false
