@@ -17,7 +17,7 @@ automatically after upload to git.
 ## NATS servers
 Starting from version 1.1.0, the project supports multiple nats servers (as serverish started to support).
 Default, in the `oca_nats_config/config.yaml` are two servers:
-* `nts.oca.lan` - the main server for the OCA observatory
+* `nats.oca.lan` - the main server for the OCA observatory
 * `localhost` - the developer server
 This means, that in observatory, the `nts.oca.lan` server will be updated, 
 and on the developer machine, the `localhost` server will be updated.
