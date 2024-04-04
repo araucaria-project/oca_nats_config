@@ -4,7 +4,7 @@ Requires=docker.service
 After=docker.service
 
 [Service]
-WorkingDirectory=/home/poweruser/src/serverish/docker/nats
+WorkingDirectory=/home/poweruser/src/oca_nats_config/docker/nats
 ExecStart=/usr/bin/docker compose up
 ExecStop=/usr/bin/docker compose downRestart=always
 Restart=always
