@@ -41,6 +41,16 @@ STREAMS:
         Discard: old
         DenyDelete: false
         DenyPurge: false
+    tic_planner:  # For obs plan updates.
+        Subjects:
+            - tic.planner.>
+        Description: "For planner - obs plan updates."
+        MaxAge: 2592000   # 2592000s = 30 days
+        MaxBytes: 524288000  # max size in bytes 500 MB
+        NoAck: false
+        Discard: old
+        DenyDelete: false
+        DenyPurge: false
     tic_journal:  # Retention policy for TICjournal: minimum 1 day, as long as disk space limit is not reached
         Subjects:
             - tic.journal.>
