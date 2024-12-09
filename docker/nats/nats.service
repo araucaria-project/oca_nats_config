@@ -2,12 +2,24 @@
 Description=Nats Server
 Requires=docker.service
 After=docker.service
+StartLimitIntervalSec=60
+StartLimitBurst=3
 
 [Service]
+Type=simple
 WorkingDirectory=/home/poweruser/src/oca_nats_config/docker/nats
+
+User=poweruser
+Group=poweruser
+
 ExecStart=/usr/bin/docker compose up
-ExecStop=/usr/bin/docker compose downRestart=always
-Restart=always
+ExecStop=/usr/bin/docker compose down
+ExecStopPost=/usr/bin/docker compose down -v
+
+TimeoutStopSec=70
+Restart=on-failure
+RestartSec=5
+
 
 [Install]
 WantedBy=multi-user.target
