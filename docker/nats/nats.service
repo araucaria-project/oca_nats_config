@@ -9,8 +9,8 @@ StartLimitBurst=3
 Type=simple
 WorkingDirectory=/home/poweruser/src/oca_nats_config/docker/nats
 
-User=poweruser
-Group=poweruser
+#User=poweruser
+#Group=poweruser
 
 ExecStart=/usr/bin/docker compose up
 ExecStop=/usr/bin/docker compose down
