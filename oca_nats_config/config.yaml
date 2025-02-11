@@ -97,6 +97,7 @@ STREAMS:
             - telemetry.blinds.>
             - telemetry.switch.>   # eg blebox-switch
             - telemetry.sensor.>   # eg blebox-binarysensor (door sensor)
+            - telemetry.power.>
         MaxAge: 2592000   # czas w sekundach !! trzymania wiadomości 2592000 = 30 days
         MaxBytes: 524288000  # max size in bytes 524288000 = 500 MB
         NoAck: false
