@@ -19,7 +19,7 @@ STREAMS:
         DenyPurge: false
     tic_config:  # Retention policy for TIC config: no time limit, new config exchanges old one, no need for a lot of disk space
         Subjects:
-            - tic.config.>
+            - tic.config.>  # including tic.config.observatory subject for main OCA observatory config
         Description: "For observatory config (and maqybe similar configs). Last message in subject is the current config."
         MaxAge: null   # No time limit
         MaxBytes: 10485760  # max size in bytes 10 MB
