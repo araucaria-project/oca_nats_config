@@ -1,115 +1,150 @@
 NATS:
-    - port: 4222
-      host: nats.oca.lan
-      protocol: nats
-    - port: 4222
-      host: localhost
-      protocol: nats
+  - port: 4222
+    host: nats.oca.lan
+    protocol: nats
+  - port: 4222
+    host: localhost
+    protocol: nats
 
 STREAMS:
-    tic_telemetry:  # Retention policy for TIC telemetry: minimum 1 day, as long as disk space limit is not reached
-        Subjects:
-            - tic.telemetry.>
-        Description: "TIC telemetry - for any useful diagnostic data, and for (mostly numerical) values which may be presented in UI"
-        MaxAge: 2592000   # 2592000s = 30 days
-        MaxBytes: 524288000  # max size in bytes 524288000 = 500 MB
-        NoAck: false
-        Discard: old
-        DenyDelete: false
-        DenyPurge: false
-    tic_config:  # Retention policy for TIC config: no time limit, new config exchanges old one, no need for a lot of disk space
-        Subjects:
-            - tic.config.>  # including tic.config.observatory subject for main OCA observatory config
-        Description: "For observatory config (and maqybe similar configs). Last message in subject is the current config."
-        MaxAge: null   # No time limit
-        MaxBytes: 10485760  # max size in bytes 10 MB
-        MaxMsgsPerSubject: 10 # save some history
-        NoAck: false
-        Discard: old
-        DenyDelete: false
-        DenyPurge: false
-    tic_status:  # Retention policy for TIC components status logs: minimum 1 day, as long as disk space limit is not reached
-        Subjects:
-            - tic.status.>
-        # e.g.
-        #       tic.status.zb08.program.current   # current program published on program loading
-        #       tic.status.zb08.program.state     # state of the program tasks execution
-        Description: "For components and operations statuses. Mostly enum strings, may be used in application logic, and UI"
-        MaxAge: 2592000   # 2592000s = 30 days
-        MaxBytes: 524288000  # max size in bytes 500 MB
-        NoAck: false
-        Discard: old
-        DenyDelete: false
-        DenyPurge: false
-    tic_planner:  # For obs plan updates.
-        Subjects:
-            - tic.planner.>
-        Description: "For planner - obs plan updates."
-        MaxAge: 2592000   # 2592000s = 30 days
-        MaxBytes: 524288000  # max size in bytes 500 MB
-        NoAck: false
-        Discard: old
-        DenyDelete: false
-        DenyPurge: false
-    tic_journal:  # Retention policy for TICjournal: minimum 1 day, as long as disk space limit is not reached
-        Subjects:
-            - tic.journal.>
-        Description: "For components and operations textual logs which should be presented to the operator."
-        MaxAge: 2592000   # 2592000s = 30 days
-        MaxBytes: 524288000  # max size in bytes 500 MB
-        NoAck: false
-        Discard: old
-        DenyDelete: false
-        DenyPurge: false
-    tic_progress:  # Retention policy for TIC operations progess tracking: max 1 day, in memory
-        Description: "For progress tracking of long operations. Last message in subject is the current progress. use by specialized MsgProgessXXX classes."
-        Subjects:
-            - tic.progress.>
-        MaxAge: 86400   # 2592000s = 30 days
-        MaxBytes: 524288000  # max size in bytes 500 MB
-        MaxMsgsPerSubject: 10 # save some history
-        Storage: memory
-        NoAck: true
-        Discard: old
-        DenyDelete: false
-        DenyPurge: false
-    # Do not uncomment, just for reference and reservation of the Subject name
-#    tic_rpc:  # Retention policy for RPC Req-Resp: DO NOT USE JetStream for RPC, use NATS core with tic.rpc subject
-#        Subjects:
-#            - tic.rpc.>
-#        Description: "Request-Reposnse calls to remote components. JetStream not needed, and not suitable for RPC."
-    telemetry:
-        Subjects: # topics
-            - telemetry.water.level
-            - telemetry.water2.level
-            - telemetry.diesel.level
-#            - telemetry.weather.temperature
-#            - telemetry.weather.wind
-#            - telemetry.weather.wind_dir
-#            - telemetry.weather.humidity
-#            - telemetry.weather.rain
-#            - telemetry.weather.sun_light
-#            - telemetry.weather.sky_temperature
-            - telemetry.weather.>
-#            - telemetry.weather.davis  ## full weather messages from allsky.oca.lan RbPi
-            - telemetry.conditions.>
-            - telemetry.lights.>
-            - telemetry.blinds.>
-            - telemetry.switch.>   # eg blebox-switch
-            - telemetry.sensor.>   # eg blebox-binarysensor (door sensor)
-            - telemetry.power.>
-        MaxAge: 2592000   # czas w sekundach !! trzymania wiadomości 2592000 = 30 days
-        MaxBytes: 524288000  # max size in bytes 524288000 = 500 MB
-        NoAck: false
-        Discard: old  # jakie wiadomości odrzuca gdy się przepełni
-        DenyDelete: false  # pozwól na usunięcie danych
-        DenyPurge: false  # pozwól na wyczyszczenie strumienia
-    test:
-        Subjects:
-            - test.>
-        MaxAge: 3600   # czas w sekundach !! trzymania wiadomości (1 hour for tests)
-        MaxBytes: 104857600  # max size in bytes 104857600 = 100 MB
-        NoAck: false
-        Discard: old  # jakie wiadomości odrzuca gdy się przepełni
-        DenyDelete: false  # pozwól na usunięcie danych
-        DenyPurge: false  # pozwól na wyczyszczenie strumienia
+  tic_telemetry: # Retention policy for TIC telemetry: minimum 1 day, as long as disk space limit is not reached
+    Subjects:
+      - tic.telemetry.>
+    Description: "TIC telemetry - for any useful diagnostic data, and for (mostly numerical) values which may be presented in UI"
+    MaxAge: 2592000   # 2592000s = 30 days
+    MaxBytes: 524288000  # max size in bytes 524288000 = 500 MB
+    NoAck: false
+    Discard: old
+    DenyDelete: false
+    DenyPurge: false
+  tic_config: # Retention policy for TIC config: no time limit, new config exchanges old one, no need for a lot of disk space
+    Subjects:
+      - tic.config.>  # including tic.config.observatory subject for main OCA observatory config
+    Description: "For observatory config (and maqybe similar configs). Last message in subject is the current config."
+    MaxAge: null   # No time limit
+    MaxBytes: 10485760  # max size in bytes 10 MB
+    MaxMsgsPerSubject: 10 # save some history
+    NoAck: false
+    Discard: old
+    DenyDelete: false
+    DenyPurge: false
+  tic_status: # Retention policy for TIC components status logs: minimum 1 day, as long as disk space limit is not reached
+    Subjects:
+      - tic.status.>
+    # e.g.
+    #       tic.status.zb08.program.current   # current program published on program loading
+    #       tic.status.zb08.program.state     # state of the program tasks execution
+    Description: "For components and operations statuses. Mostly enum strings, may be used in application logic, and UI"
+    MaxAge: 2592000   # 2592000s = 30 days
+    MaxBytes: 524288000  # max size in bytes 500 MB
+    NoAck: false
+    Discard: old
+    DenyDelete: false
+    DenyPurge: false
+  tic_planner: # For obs plan updates.
+    Subjects:
+      - tic.planner.>
+    Description: "For planner - obs plan updates."
+    MaxAge: 2592000   # 2592000s = 30 days
+    MaxBytes: 524288000  # max size in bytes 500 MB
+    NoAck: false
+    Discard: old
+    DenyDelete: false
+    DenyPurge: false
+  tic_journal: # Retention policy for TICjournal: minimum 1 day, as long as disk space limit is not reached
+    Subjects:
+      - tic.journal.>
+    Description: "For components and operations textual logs which should be presented to the operator."
+    MaxAge: 2592000   # 2592000s = 30 days
+    MaxBytes: 524288000  # max size in bytes 500 MB
+    NoAck: false
+    Discard: old
+    DenyDelete: false
+    DenyPurge: false
+  tic_progress: # Retention policy for TIC operations progess tracking: max 1 day, in memory
+    Description: "For progress tracking of long operations. Last message in subject is the current progress. use by specialized MsgProgessXXX classes."
+    Subjects:
+      - tic.progress.>
+    MaxAge: 86400   # 2592000s = 30 days
+    MaxBytes: 524288000  # max size in bytes 500 MB
+    MaxMsgsPerSubject: 10 # save some history
+    Storage: memory
+    NoAck: true
+    Discard: old
+    DenyDelete: false
+    DenyPurge: false
+  # Do not uncomment, just for reference and reservation of the Subject name
+  #    tic_rpc:  # Retention policy for RPC Req-Resp: DO NOT USE JetStream for RPC, use NATS core with tic.rpc subject
+  #        Subjects:
+  #            - tic.rpc.>
+  #        Description: "Request-Reposnse calls to remote components. JetStream not needed, and not suitable for RPC."
+  telemetry:
+    Subjects: # topics
+      - telemetry.water.level
+      - telemetry.water2.level
+      - telemetry.diesel.level
+      #            - telemetry.weather.temperature
+      #            - telemetry.weather.wind
+      #            - telemetry.weather.wind_dir
+      #            - telemetry.weather.humidity
+      #            - telemetry.weather.rain
+      #            - telemetry.weather.sun_light
+      #            - telemetry.weather.sky_temperature
+      - telemetry.weather.>
+      #            - telemetry.weather.davis  ## full weather messages from allsky.oca.lan RbPi
+      - telemetry.conditions.>
+      - telemetry.lights.>
+      - telemetry.blinds.>
+      - telemetry.switch.>   # eg blebox-switch
+      - telemetry.sensor.>   # eg blebox-binarysensor (door sensor)
+      - telemetry.power.>
+    MaxAge: 2592000   # czas w sekundach !! trzymania wiadomości 2592000 = 30 days
+    MaxBytes: 524288000  # max size in bytes 524288000 = 500 MB
+    NoAck: false
+    Discard: old  # jakie wiadomości odrzuca gdy się przepełni
+    DenyDelete: false  # pozwól na usunięcie danych
+    DenyPurge: false  # pozwól na wyczyszczenie strumienia
+  # service realted subjects and streams
+  svc_registry:
+    Subjects:
+      - svc.registry.>
+    Description: "Service lifecycle events (start/stop/declared/ready/stopping)"
+    MaxAge: null              # Keep indefinitely for discovery
+    MaxBytes: 10485760        # 10 MB
+    MaxMsgsPerSubject: 100    # Keep history per service
+    NoAck: false
+    Discard: old
+    DenyDelete: false
+    DenyPurge: false
+  svc_status:
+    Subjects:
+      - svc.status.>
+    Description: "Service status updates and health information"
+    MaxAge: 2592000           # 30 days
+    MaxBytes: 524288000       # 500 MB
+    NoAck: false
+    Discard: old
+    DenyDelete: false
+    DenyPurge: false
+  svc_heartbeat:
+    Subjects:
+      - svc.heartbeat.>
+    Description: "Service heartbeat messages"
+    MaxAge: 86400             # 1 day
+    MaxBytes: 104857600       # 100 MB
+    Storage: memory           # Fast, no persistence needed
+    NoAck: true
+    Discard: old
+    DenyDelete: false
+    DenyPurge: false
+  # Note: RPC uses Core NATS, not JetStream
+  # Subject pattern: svc.rpc.<service_name>.v1.<command>
+  test:
+    Subjects:
+      - test.>
+    MaxAge: 3600   # czas w sekundach !! trzymania wiadomości (1 hour for tests)
+    MaxBytes: 104857600  # max size in bytes 104857600 = 100 MB
+    NoAck: false
+    Discard: old  # jakie wiadomości odrzuca gdy się przepełni
+    DenyDelete: false  # pozwól na usunięcie danych
+    DenyPurge: false  # pozwól na wyczyszczenie strumienia
