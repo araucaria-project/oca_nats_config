@@ -69,7 +69,7 @@ STREAMS:
     MaxBytes: 524288000  # max size in bytes 500 MB
     MaxMsgsPerSubject: 10 # save some history
 #    Storage: memory   # will not survive restart
-    NoAck: true
+    NoAck: false
     Discard: old
     DenyDelete: false
     DenyPurge: false
@@ -133,7 +133,7 @@ STREAMS:
     MaxAge: 86400             # 1 day
     MaxBytes: 104857600       # 100 MB
 #    Storage: memory           # Fast, no persistence needed, inmemory streams are not preserved after restart :(
-    NoAck: true
+    NoAck: false
     Discard: old
     DenyDelete: false
     DenyPurge: false
