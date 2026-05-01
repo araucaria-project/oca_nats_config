@@ -139,6 +139,22 @@ STREAMS:
     DenyPurge: false
   # Note: RPC uses Core NATS, not JetStream
   # Subject pattern: svc.rpc.<service_name>.v1.<command>
+  svc_publish:
+    Subjects:
+      - svc.publish.>
+    Description: "Synthesized product snapshots from services (e.g. pms.aggregator publishes svc.publish.oca.observatory.{environment,telescopes,observing.<tele>,services}). Each product republishes a fixed-shape snapshot every cycle; consumers read the latest message per subject for current state."
+    # Retention strategy: disk-bound, not time-bound. MaxAge is a generous
+    # nominal upper bound (so nothing truly ancient lingers); MaxBytes is the
+    # actual cap; MaxMsgsPerSubject keeps any one heavyweight product (e.g.
+    # observing.<tele> with full plan dumps) from crowding out slow ones
+    # (environment, services) when Discard: old kicks in globally-oldest-first.
+    MaxAge: 1209600            # 14 days — nominal upper bound; rarely the binding constraint
+    MaxBytes: 524288000        # 500 MB — primary cap; covers ~half-day of full traffic at peak
+    MaxMsgsPerSubject: 1000    # per-subject fairness; ~4h for 15s cadence, ~8h for 30s cadence
+    NoAck: false
+    Discard: old
+    DenyDelete: false
+    DenyPurge: false
   test:
     Subjects:
       - test.>
