@@ -121,6 +121,23 @@ STREAMS:
     DenyPurge: false
 
 
+  camk_event:
+    Subjects:
+      - camk.event.>
+    # e.g.
+    #       camk.event.file.sync.done.fits.raw.ofp.jk15
+    #       camk.event.file.process.done.fits.science.ofp.jk15
+    #       camk.event.file.upload.start.fits.science.sroca.jk15
+      
+    Description: "For components and operations events. Mostly enum strings, may be used in application logic, and UI"
+#    MaxAge: 2592000   # 2592000s = 30 days
+    MaxBytes: 10485760        # 10 MB
+    NoAck: false
+    Discard: old
+    DenyDelete: false
+    DenyPurge: false
+
+
   svc_registry:
     Subjects:
       - svc.registry.>
