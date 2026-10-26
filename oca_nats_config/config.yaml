@@ -137,8 +137,7 @@ STREAMS:
     Discard: old
     DenyDelete: false
     DenyPurge: false
-  # Note: RPC uses Core NATS, not JetStream
-  # Subject pattern: svc.rpc.<service_name>.v1.<command>
+  # svc.> is reserved for the ocabox-tcs library (heartbeat, status, registry); application RPC is rpc.> (below).
   svc_publish:
     Subjects:
       - svc.publish.>
@@ -155,6 +154,22 @@ STREAMS:
     Discard: old
     DenyDelete: false
     DenyPurge: false
+  # --- Classes of the subject grammar <class>.<realm>.<scope>.<element>.<item> (oca_nats_config#2) ---
+  # New services publish here; the legacy tic.* / svc.publish.* families stay until migrated writer by writer.
+  status:
+    Subjects:
+      - status.>
+    Description: "State of components and services (enum, bool, scalar), one value per subject, on change plus keepalive; e.g. status.optics.jk15.camera.sees. Consumers read the last message per subject."
+    MaxAge: 2592000            # 30 days
+    MaxBytes: 524288000        # 500 MB
+    MaxMsgsPerSubject: 1000    # per-subject fairness: a chatty subject can't evict the slow ones
+    NoAck: false
+    Discard: old
+    DenyDelete: false
+    DenyPurge: false
+  # Do not add a stream for rpc.>: request/reply is core NATS, and serverish refuses
+  # RPC on subjects captured by a stream. Pattern: rpc.<service_type>.<scope>.<element>.<method>, e.g.
+  # rpc.optics.jk15.camera.setpath.
   test:
     Subjects:
       - test.>
