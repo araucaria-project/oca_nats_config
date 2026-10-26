@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import confuse
 from nats.js.api import StreamConfig, DiscardPolicy
 from nats.js.errors import NotFoundError, BadRequestError, ServerError
 from serverish.connection import ConnectionNATS
@@ -7,6 +8,10 @@ from serverish.base import StatusEnum
 from oca_nats_config.singleton_config import SingletonConfig
 
 logger = logging.getLogger(__name__.rsplit('.')[-1])
+
+KV_STREAM_PREFIX = "KV_"
+KV_SUBJECT_TEMPLATE = "$KV.{bucket}.>"
+KV_DUPLICATE_WINDOW_MAX = 2 * 60  # matches nats-py's own create_key_value()
 
 
 class BuildStreams:
@@ -22,6 +27,14 @@ class BuildStreams:
             self.protocol.append(server["protocol"].get())
 
         self.streams = SingletonConfig.get_config()["STREAMS"].get()
+        self.kv_buckets = self._get_kv_buckets_config()
+
+    @staticmethod
+    def _get_kv_buckets_config() -> dict:
+        try:
+            return SingletonConfig.get_config()["KV_BUCKETS"].get()
+        except confuse.NotFoundError:
+            return {}
 
     async def build_streams(self):
         cnc = ConnectionNATS(port=self.port, host=self.host)
@@ -84,8 +97,65 @@ class BuildStreams:
                         logger.error(f"Get error when trying to create stream: {e}")
                         return
                 logger.info(f"Successfully created stream '{c.name}'")
+
+            await self._build_kv_buckets(js)
         finally:
             await nc.close()
+
+    async def _build_kv_buckets(self, js):
+        """Creates/updates the KV buckets listed under KV_BUCKETS in config.yaml (sroca).
+
+        nats-py's own `js.create_key_value()` has no update path and errors out if the
+        underlying stream already exists, so — same as for STREAMS above — we build the
+        equivalent StreamConfig ourselves (mirroring what create_key_value() does
+        internally) and create or update it the same way regular streams are.
+        """
+        for bucket, setting in self.kv_buckets.items():
+            c = self._kv_bucket_stream_config(bucket, setting)
+            if not await self._create_or_update_stream(js, c):
+                return
+
+    @staticmethod
+    def _kv_bucket_stream_config(bucket: str, setting) -> StreamConfig:
+        ttl = setting.get("TTL", None)
+        duplicate_window = min(ttl, KV_DUPLICATE_WINDOW_MAX) if ttl else KV_DUPLICATE_WINDOW_MAX
+        return StreamConfig(
+            name=f"{KV_STREAM_PREFIX}{bucket}",
+            description=setting.get("Description", None),
+            subjects=[KV_SUBJECT_TEMPLATE.format(bucket=bucket)],
+            max_consumers=-1,
+            max_msgs=-1,
+            max_msgs_per_subject=setting.get("History", 1),
+            max_bytes=setting.get("MaxBytes", None),
+            max_msg_size=setting.get("MaxValueSize", None),
+            discard=DiscardPolicy.NEW,
+            max_age=ttl,  # in seconds
+            storage=setting.get("Storage", None),
+            num_replicas=setting.get("Replicas", None),
+            duplicate_window=duplicate_window,
+            deny_delete=True,
+            allow_rollup_hdrs=True,
+            allow_direct=setting.get("Direct", None),
+            republish=setting.get("RePublish", None),
+        )
+
+    async def _create_or_update_stream(self, js, c: StreamConfig) -> bool:
+        """Used for KV buckets. Returns False if the stream could not be created, so the caller stops."""
+        if await self._is_stream_exist(js, c.name):
+            logger.info(f"Stream '{c.name}' already exist")
+            await self._update_stream(js=js, cfg=c)
+            return True
+        try:
+            await js.add_stream(config=c)
+        except BadRequestError as e:
+            if e.err_code == 10065:
+                logger.error(f"One of the subjects '{c.subjects}' is already used by other stream")
+                return False
+            else:
+                logger.error(f"Get error when trying to create stream: {e}")
+                return False
+        logger.info(f"Successfully created stream '{c.name}'")
+        return True
 
     @staticmethod
     async def _is_stream_exist(js, name):

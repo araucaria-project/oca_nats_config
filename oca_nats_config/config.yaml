@@ -164,3 +164,36 @@ STREAMS:
     Discard: old  # jakie wiadomości odrzuca gdy się przepełni
     DenyDelete: false  # pozwól na usunięcie danych
     DenyPurge: false  # pozwól na wyczyszczenie strumienia
+  oca_event:
+    Subjects:
+      - oca.event.>
+    # e.g.
+    #       oca.event.sroca.manual   - srocactl upload -> sroca, manual batch uploads
+    #       oca.event.sroca.retry    - srocactl -> sroca, retry/list-failed/ping commands
+    #       oca.event.sroca.failed   - sroca -> *, failure notifications
+    #       oca.event.sroca.logs     - sroca -> *, WARNING+ per-file events
+    Description: "For components and operations events (e.g. sroca FITS -> OcaDB/S3 sync commands and notifications)"
+    MaxAge: 2592000   # 30 days — must match sroca's durable consumer inactive_threshold
+    MaxBytes: 524288000  # max size in bytes 524288000 = 500 MB
+    NoAck: false
+    Discard: old
+    DenyDelete: false
+    DenyPurge: false
+
+KV_BUCKETS:
+  SROCA_FAILED_TASK:
+    Description: "sroca tasks that failed before dispatch (e.g. FITS load errors) — retried via SrocaTaskHandler"
+    History: 1
+    TTL: 2592000   # 30 days
+  SROCA_FAILED_OCADB:
+    Description: "sroca failed OcaDB tasks — one entry per filename, retried via CLI"
+    History: 1
+    TTL: 2592000   # 30 days
+  SROCA_FAILED_S3:
+    Description: "sroca failed S3 upload tasks — one entry per filename, retried via CLI"
+    History: 1
+    TTL: 2592000   # 30 days
+  SROCA_FILE_EVENTS:
+    Description: "sroca per-file event log — full processing history queryable by filename"
+    History: 64
+    TTL: 2592000   # 30 days
