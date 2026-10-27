@@ -78,32 +78,6 @@ STREAMS:
   #        Subjects:
   #            - tic.rpc.>
   #        Description: "Request-Reposnse calls to remote components. JetStream not needed, and not suitable for RPC."
-  telemetry:
-    Subjects: # topics
-      - telemetry.water.level
-      - telemetry.water2.level
-      - telemetry.diesel.level
-      #            - telemetry.weather.temperature
-      #            - telemetry.weather.wind
-      #            - telemetry.weather.wind_dir
-      #            - telemetry.weather.humidity
-      #            - telemetry.weather.rain
-      #            - telemetry.weather.sun_light
-      #            - telemetry.weather.sky_temperature
-      - telemetry.weather.>
-      #            - telemetry.weather.davis  ## full weather messages from allsky.oca.lan RbPi
-      - telemetry.conditions.>
-      - telemetry.lights.>
-      - telemetry.blinds.>
-      - telemetry.switch.>   # eg blebox-switch
-      - telemetry.sensor.>   # eg blebox-binarysensor (door sensor)
-      - telemetry.power.>
-    MaxAge: 2592000   # czas w sekundach !! trzymania wiadomości 2592000 = 30 days
-    MaxBytes: 524288000  # max size in bytes 524288000 = 500 MB
-    NoAck: false
-    Discard: old  # jakie wiadomości odrzuca gdy się przepełni
-    DenyDelete: false  # pozwól na usunięcie danych
-    DenyPurge: false  # pozwól na wyczyszczenie strumienia
   # service realted subjects and streams
   svc_registry:
     Subjects:
@@ -167,9 +141,78 @@ STREAMS:
     Discard: old
     DenyDelete: false
     DenyPurge: false
+  telemetry:
+    Subjects:
+      - telemetry.>
+    # One stream for the whole class. It also keeps capturing the legacy 3-token families
+    # (telemetry.weather.davis, .conditions.*, .power.*, .water.level, ...) until they move to
+    # telemetry.env|fac.<scope>.<element>.<metric>; a second stream on telemetry.> would overlap them.
+    Description: "Numeric measurements, one value per subject (a subject is one time series); e.g. telemetry.tic.zb08.mount.altitude, telemetry.env.oca.davis.temperature_c."
+    MaxAge: 2592000            # 30 days
+    MaxBytes: 1073741824       # 1 GB: legacy telemetry (500 MB today) plus migrated tic.telemetry
+    NoAck: false
+    Discard: old
+    DenyDelete: false
+    DenyPurge: false
+  event:
+    Subjects:
+      - event.>
+    Description: "Something happened (past tense): lifecycle, exposure done, frame downloaded; e.g. event.ofp.zb08.camera.downloaded, event.planner.zb08.main.error."
+    MaxAge: 2592000            # 30 days
+    MaxBytes: 524288000        # 500 MB
+    NoAck: false
+    Discard: old
+    DenyDelete: false
+    DenyPurge: false
+  journal:
+    Subjects:
+      - journal.>
+    Description: "Timestamped log records for humans, realm = the service that narrates; e.g. journal.toi.zb08.self.log, journal.ofp_download.zb08.camera.log."
+    MaxAge: 2592000            # 30 days
+    MaxBytes: 524288000        # 500 MB (tic.journal + toi.log today: ~250 MB per 30 days)
+    NoAck: false
+    Discard: old
+    DenyDelete: false
+    DenyPurge: false
+  data:
+    Subjects:
+      - data.>
+    Description: "Pipeline and analysis products: FITS stats, photometry, plans, aggregates; e.g. data.ofp.zb08.camera.raw, data.pms.oca.self.environment."
+    # Mixed cadence: per-frame products next to snapshots republished every ~15 s (pms). Disk-bound;
+    # MaxMsgsPerSubject keeps a fast snapshot from evicting the nights of frame products.
+    MaxAge: 2592000            # 30 days
+    MaxBytes: 1073741824       # 1 GB
+    MaxMsgsPerSubject: 2000    # >= 2 busy nights of frames per instrument; ~8 h of a 15 s snapshot
+    NoAck: false
+    Discard: old
+    DenyDelete: false
+    DenyPurge: false
+  message:
+    Subjects:
+      - message.>
+    Description: "Operator notices, realm = the writer; readers subscribe to message.>; e.g. message.toi.oca.self.notice."
+    MaxAge: 2592000            # 30 days
+    MaxBytes: 104857600        # 100 MB
+    NoAck: false
+    Discard: old
+    DenyDelete: false
+    DenyPurge: false
+  cfg:
+    Subjects:
+      - cfg.>
+    Description: "Configuration documents; the last message per subject is the current one; e.g. cfg.tic.oca.self.observatory."
+    MaxAge: null               # No time limit
+    MaxBytes: 10485760         # 10 MB
+    MaxMsgsPerSubject: 10      # some history
+    NoAck: false
+    Discard: old
+    DenyDelete: false
+    DenyPurge: false
   # Do not add a stream for rpc.>: request/reply is core NATS, and serverish refuses
   # RPC on subjects captured by a stream. Pattern: rpc.<service_type>.<scope>.<element>.<method>, e.g.
   # rpc.optics.jk15.camera.setpath.
+  # Do not add a stream for cmd.> either: commands are fire-and-forget on core NATS. A stream would let
+  # a restarting listener replay and re-execute old commands; the outcome comes back as event/status.
   test:
     Subjects:
       - test.>
